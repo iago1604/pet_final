@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PetConnect - Adote um Amigo</title>
+    
+    <!-- CSS Externo -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Ícones Lucide (Versão UMD Fixa para evitar erros) -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- Fontes Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Configuração do Tailwind -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            },
+            colors: {
+              brand: {
+                orange: '#FF6B35',
+                black: '#1A1A1A',
+                dark: '#2D2D2D',
+                light: '#FFF7ED',
+                white: '#FFFFFF'
+              }
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="min-h-screen flex flex-col font-sans text-brand-black relative">
+
+    <!-- HEADER LARANJA -->
+    <header class="bg-brand-orange sticky top-0 z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                
+                <!-- LOGO -->
+                <div class="flex items-center gap-2 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                    <i data-lucide="paw-print" class="text-white h-8 w-8"></i>
+                    <span class="text-2xl font-black text-white tracking-tighter">
+                        Pet<span class="text-orange-100">Connect</span>
+                    </span>
+                </div>
+
+                <!-- MENU -->
+                <nav class="hidden md:flex gap-8 font-medium text-white/90">
+                    <button onclick="handleNavigate('hero')" class="hover:text-white hover:scale-105 transition">Início</button>
+                    <button onclick="handleNavigate('pets')" class="hover:text-white hover:scale-105 transition">Adotar</button>
+                    <button onclick="handleNavigate('stories')" class="hover:text-white hover:scale-105 transition">Histórias</button>
+                    <button onclick="handleNavigate('donate')" class="hover:text-white hover:scale-105 transition">Doar</button>
+                </nav>
+
+                <!-- BOTÃO -->
+                <button onclick="openModal('match')" class="bg-white text-brand-orange px-5 py-2.5 rounded-full font-bold hover:bg-orange-50 transition shadow-xl text-sm flex items-center gap-2 border-2 border-transparent">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-brand-orange"></i> Match IA
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow">
+        
+        <!-- DETALHES DO PET -->
+        <div id="pet-detail-view" class="hidden animate-fade-in max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+            <!-- Injetado via JS -->
+        </div>
+
+        <!-- LISTA PRINCIPAL -->
+        <div id="list-view">
+            
+            <!-- HERO -->
+            <div id="hero" class="bg-gradient-to-b from-orange-100/60 to-brand-light relative overflow-hidden border-b border-orange-100">
+                <div class="absolute top-0 right-0 w-2/3 h-full bg-brand-orange/5 transform skew-x-12 translate-x-20 rounded-bl-3xl"></div>
+                <div class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8 relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+                    <div class="max-w-2xl">
+                        <h1 class="text-5xl md:text-6xl font-black leading-tight mb-6 tracking-tight text-brand-dark">
+                            Encontre seu novo <br/><span class="text-brand-orange">melhor amigo</span>.
+                        </h1>
+                        <p class="text-xl text-gray-600 mb-8 max-w-lg font-light leading-relaxed">
+                            Milhares de animais estão esperando por uma família amorosa. Use nosso Match com IA para encontrar o companheiro perfeito.
+                        </p>
+                        <div class="flex gap-4">
+                            <button onclick="openModal('match')" class="bg-brand-orange text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-orange-600 transition flex items-center gap-2 shadow-xl shadow-orange-200 transform hover:-translate-y-1">
+                                Match com IA <i data-lucide="check-circle" class="w-5 h-5"></i>
+                            </button>
+                            <button onclick="handleNavigate('pets')" class="bg-white border-2 border-orange-100 text-brand-orange px-8 py-4 rounded-full font-bold text-lg hover:bg-orange-50 transition">
+                                Ver Pets
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hidden md:block w-80 h-80 bg-brand-orange rounded-full relative shadow-2xl shadow-orange-300/50 ring-8 ring-white/50">
+                        <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=800&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover rounded-full border-4 border-white" alt="Hero Dog" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO DE PETS -->
+            <div id="pets" class="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-black text-brand-black mb-4">Nossos Amigos Peludos</h2>
+                    <p class="text-gray-500 max-w-2xl mx-auto">Navegue por nossa lista de animais adoráveis esperando por um lar.</p>
+                </div>
+
+                <!-- Filtros -->
+                <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+                    <div class="flex bg-white p-1 rounded-full shadow-sm border border-gray-200" id="category-filters">
+                        <button onclick="setCategory('Todos')" class="filter-btn px-6 py-2 rounded-full font-bold transition bg-brand-orange text-white shadow-md" data-type="Todos">Todos</button>
+                        <button onclick="setCategory('Cachorro')" class="filter-btn px-6 py-2 rounded-full font-bold transition text-gray-500 hover:text-brand-orange" data-type="Cachorro">Cães</button>
+                        <button onclick="setCategory('Gato')" class="filter-btn px-6 py-2 rounded-full font-bold transition text-gray-500 hover:text-brand-orange" data-type="Gato">Gatos</button>
+                    </div>
+
+                    <div class="relative w-full md:w-72">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5"></i>
+                        <input type="text" id="search-input" placeholder="Buscar por nome ou raça..." class="w-full pl-10 pr-4 py-2 rounded-full border border-gray-200 focus:border-brand-orange focus:ring-1 focus:ring-brand-orange outline-none bg-white">
+                    </div>
+                </div>
+
+                <!-- GRADE ONDE OS PETS APARECEM -->
+                <!-- Se este ID estiver errado, nada aparece. Aqui está correto. -->
+                <div id="pets-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 min-h-[300px]">
+                    <!-- O JavaScript vai preencher isso aqui -->
+                </div>
+            </div>
+
+            <!-- STORIES -->
+            <div id="stories" class="bg-white py-20">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <span class="text-brand-orange font-bold tracking-widest uppercase text-sm">Finais Felizes</span>
+                        <h2 class="text-4xl font-black text-brand-black mt-2">Histórias de Adoção</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-orange-50 p-8 rounded-3xl relative">
+                            <i data-lucide="quote" class="absolute top-8 left-8 text-orange-200 h-16 w-16 -z-10"></i>
+                            <div class="flex items-center gap-4 mb-6">
+                                <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop" class="w-16 h-16 rounded-full object-cover border-2 border-white shadow-md" />
+                                <div>
+                                    <h4 class="font-bold text-lg">Ana & Pipoca</h4>
+                                    <p className="text-sm text-gray-500">Adotado em 2023</p>
+                                </div>
+                            </div>
+                            <p className="text-gray-700 italic">"Adotar a Pipoca foi a melhor decisão. O processo no PetConnect foi simples!"</p>
+                        </div>
+                        <div class="bg-brand-black text-white p-8 rounded-3xl relative">
+                             <i data-lucide="quote" class="absolute top-8 left-8 text-gray-700 h-16 w-16 -z-10"></i>
+                            <div class="flex items-center gap-4 mb-6">
+                                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop" class="w-16 h-16 rounded-full object-cover border-2 border-brand-orange shadow-md" />
+                                <div>
+                                    <h4 class="font-bold text-lg">Carlos & Thor</h4>
+                                    <p className="text-sm text-gray-400">Adotado em 2024</p>
+                                </div>
+                            </div>
+                            <p className="text-gray-300 italic">"Eu procurava um companheiro e o algoritmo de Match acertou em cheio."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DONATE -->
+            <div id="donate" class="bg-brand-orange text-white py-20 relative overflow-hidden text-center">
+                <div class="max-w-7xl mx-auto px-4 relative z-10">
+                    <i data-lucide="heart-handshake" class="h-16 w-16 mx-auto mb-6 text-white"></i>
+                    <h2 class="text-4xl font-black mb-6">Faça a Diferença Hoje</h2>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button onclick="openModal('donate')" class="bg-white text-brand-orange px-8 py-4 rounded-full font-bold hover:bg-orange-50 flex items-center justify-center gap-2">
+                            <i data-lucide="gift" class="w-5 h-5"></i> Doar Ração
+                        </button>
+                        <button onclick="openModal('volunteer')" class="bg-brand-black border-2 border-brand-black text-white px-8 py-4 rounded-full font-bold hover:bg-gray-800 flex items-center justify-center gap-2">
+                            Seja Voluntário
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-dark text-white py-12 text-center">
+        <p class="text-gray-500">© 2024 PetConnect. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- MODAL -->
+    <div id="modal-overlay" class="fixed inset-0 z-[70] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div id="modal-content" class="relative bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center animate-fade-in"></div>
+    </div>
+
+    <!-- SCRIPT (Verifique se o nome do arquivo na sua pasta é script.js) -->
+    <script src="script.js"></script>
+</body>
+</html>
